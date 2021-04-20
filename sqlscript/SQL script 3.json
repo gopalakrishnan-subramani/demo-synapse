@@ -1,0 +1,17 @@
+{
+	"name": "SQL script 3",
+	"properties": {
+		"content": {
+			"query": "\nCREATE TABLE invoices (\n    InvoiceNo VARCHAR(256),\n    StockCode      VARCHAR(256),\n    Description VARCHAR(256),\n    Quantity       INT,\n    InvoiceDate    DATETIME,\n    UnitPrice      float, \n    Customer VARCHAR(256),\n    Country  VARCHAR(256)\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "DediPool1",
+				"databaseName": "DediPool1"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}

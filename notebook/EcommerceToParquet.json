@@ -1,0 +1,129 @@
+{
+	"name": "EcommerceToParquet",
+	"properties": {
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "SparkPool1",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/55a93891-4563-4a52-bf51-7c4d2439d3a9/resourceGroups/AzurePass/providers/Microsoft.Synapse/workspaces/gkworkshop/bigDataPools/SparkPool1",
+				"name": "SparkPool1",
+				"type": "Spark",
+				"endpoint": "https://gkworkshop.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/SparkPool1",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 3,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import pyspark\n",
+					"from pyspark.sql.types import StructType, StringType, IntegerType, DoubleType, DateType, TimestampType\n",
+					"from pyspark.sql.functions import col, count, sum\n",
+					"\n",
+					"# inferSchema, it scan data and build schema automatically\n",
+					" \n",
+					"schema = StructType()\\\n",
+					"        .add(\"InvoiceNo\", StringType(), True)\\\n",
+					"        .add(\"StockCode\", StringType(), True)\\\n",
+					"        .add(\"Description\", StringType(), True)\\\n",
+					"        .add(\"Quantity\", IntegerType(), True)\\\n",
+					"        .add(\"InvoiceDate\", DateType(), True)\\\n",
+					"        .add(\"UnitPrice\", DoubleType(), True)\\\n",
+					"        .add(\"Customer\", StringType(), True)\\\n",
+					"        .add(\"Country\", StringType(), True)\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"input_file_path = 'abfss://invoices@gkworkshopstorage.dfs.core.windows.net/'\n",
+					"invoicesDf = spark.read.format('csv') \\\n",
+					"              .option(\"header\", True) \\\n",
+					"              .schema(schema)\\\n",
+					"              .option(\"sep\", \",\") \\\n",
+					"              .option(\"dateFormat\", \"MM/dd/yyyy HH:mm\")\\\n",
+					"              .load(input_file_path)\n",
+					"\n",
+					"invoicesDf.show(2)"
+				],
+				"attachments": null,
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"output_file_path = 'abfss://invoices-parquet@gkworkshopstorage.dfs.core.windows.net/invoices-01.parquet'\n",
+					"\n",
+					"invoicesDf\\\n",
+					".write\\\n",
+					".mode(\"overwrite\")\\\n",
+					".parquet(output_file_path)"
+				],
+				"attachments": null,
+				"execution_count": 3
+			}
+		]
+	}
+}

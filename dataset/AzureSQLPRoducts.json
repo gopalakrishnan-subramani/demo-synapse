@@ -1,0 +1,27 @@
+{
+	"name": "AzureSQLPRoducts",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "WorkshopSql",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "name",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "products"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
